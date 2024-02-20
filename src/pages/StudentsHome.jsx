@@ -1,9 +1,10 @@
 import React from 'react'
+import StudentHeader from '../components/students/StudentHeader'
 
 function StudentsHome() {
   return (
     <>
-    <div className=' flex justify-center'> Welcome to students home  </div>
+    <StudentHeader/>
     </>
   )
 }

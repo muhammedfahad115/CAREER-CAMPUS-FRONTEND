@@ -8,11 +8,14 @@ const studentAuthentication = createSlice({
     reducers : {
         setToken : (state,action) =>{
             state.token = action.payload
+        },
+        removeToken : (state) =>{
+            state.token = null
         }
     }
 })
 
-export const { setToken } = studentAuthentication.actions
+export const { setToken , removeToken } = studentAuthentication.actions
 
 export const selectToken = (state) => state.auth.token
 

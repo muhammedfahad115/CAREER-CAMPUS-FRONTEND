@@ -5,7 +5,7 @@ import 'animate.css'
 import axios from 'axios'
 import {useNavigate} from 'react-router-dom'
 import { useDispatch } from 'react-redux'
-import { setToken } from '../../redux/studentsredux/studentslice'
+import { removeToken, setToken } from '../../redux/studentsredux/studentslice'
 import studentStore from '../../redux/studentsredux/studentsstore'
 import axiosInstance from '../../api/axios'
 function StudentsLogin() {
@@ -38,7 +38,8 @@ function StudentsLogin() {
      console.log('an error has occured',error)
      if(error.response.status == 401){
       localStorage.removeItem('jwtToken')
-      
+      dispatch(removeToken())
+      console.log('token is expired')
      }
      if(error.response){
       setError(error.response.data.error)
@@ -69,7 +70,7 @@ function StudentsLogin() {
           <div className=' flex  justify-center text-center text-red-500'><span id='error'>{error}</span></div>
           <Link to={'/students/signup'}><p className=' flex gap-2 justify-center'>Don't have an account? <span className=' text-yellow-600 cursor-pointer'>SignUp</span></p></Link>
           <br />
-          {/* <div className=' flex text-sm justify-center'><p>Forgot Password ? <Link to={'/students/forgotpassword'}><button className=' underline cursor-pointer'>Click here</button></Link></p></div> */}
+          <div className=' flex text-sm justify-center'><p>Forgot Password ? <Link to={'/students/forgotpassword'}><button className=' underline cursor-pointer'>Click here</button></Link></p></div>
           <div className="flex flex-col justify-center my-7 sm:flex-row sm:items-start">
             <button type="submit" className="bg-gray-600 text-white py-2 px-4 rounded hover:bg-yellow-600 w-full sm:w-auto">Login</button>
             <Link to={'/'}><button className="mt-4 bg-gray-300 text-gray-700 py-2 px-4 rounded hover:bg-gray-400 sm:mt-0 sm:ml-4 w-full sm:w-auto">Back</button></Link>

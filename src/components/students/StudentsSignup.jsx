@@ -1,6 +1,5 @@
-import React, { useState } from 'react'
+import { useState } from 'react'
 import studentsignup from '../../assets/studentsignup.jpg'
-import axios from 'axios'
 import { Link } from 'react-router-dom'
 import 'animate.css'
 import { useNavigate } from 'react-router-dom'
@@ -10,6 +9,7 @@ function StudentsSignup() {
   const [firstName,setFirstName] = useState('')
   const [lastName,setLastName] = useState('')
   const [email,setEmail] = useState('')
+  const [phoneNumber,setPhoneNumber] = useState('')
   const [password,setPassword] = useState('')
   const [reenterpassword,setReenterPassword] = useState('') 
   const [error,setError] = useState('')
@@ -40,7 +40,7 @@ function StudentsSignup() {
       setError('')
       try{
         const response = await axiosInstance.post(`${backendUrl}`,{ 
-          firstName,lastName,email,password
+          firstName,lastName,email,phoneNumber,password
         })
         if(response.data.message){
           console.log(response.data.message)
@@ -75,7 +75,9 @@ function StudentsSignup() {
           <div className="mb-4">
             <input placeholder='E-mail'  onChange={(e)=>(setEmail(e.target.value))}   type="email" id="email" name="email" className="w-full border border-gray-300 p-2 rounded" required />
           </div>
-
+          <div className="mb-4">
+            <input placeholder='Phone Number'  onChange={(e)=>(setPhoneNumber(e.target.value))}   type="number" id="phoneNumber" name="phoneNumber" className="w-full border border-gray-300 p-2 rounded" required />
+          </div>
           <div className="mb-4">
             <input placeholder='Password'   onBlur={passwordValidation}  onChange={(e)=>(setPassword(e.target.value))}   type="password" id="password" name="password" className="w-full border border-gray-300 p-2 rounded" required />
           </div>
