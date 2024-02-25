@@ -2,6 +2,8 @@ import React from 'react'
 import { Routes,Route } from 'react-router-dom'
 import InstitutionsLogin from '../components/institutions/InstitutionsLogin'
 import InstitutionsSignup from '../components/institutions/InstitutionsSignup'
+import InstitutionsHome from '../pages/InstitutionsHome'
+import InstitutionsProfile from '../components/institutions/InstitutionsProfile'
 
 function InstituitonRouter() {
   return (
@@ -9,6 +11,8 @@ function InstituitonRouter() {
     <Routes>
         <Route path='/login' element={<InstitutionsLogin/>}></Route>
         <Route path='/signup' element={<InstitutionsSignup/>}></Route>
+        <Route path='/home' element={<InstitutionsHome/>}></Route>
+        <Route path='/addprofile' element={<InstitutionsProfile/>}></Route>
     </Routes>
     </>
   )

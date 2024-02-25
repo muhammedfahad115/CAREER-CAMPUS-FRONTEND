@@ -1,7 +1,7 @@
 import React, { useRef, useState } from 'react';
 import defaultProfile from '../../assets/defaultprofile.webp'
 import axiosInstance from '../../api/axios';
-function StudentProfile() {
+function InstitutionsProfile() {
     // State variables for each input field
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
@@ -211,4 +211,4 @@ function StudentProfile() {
     );
 }
 
-export default StudentProfile;
+export default InstitutionsProfile;

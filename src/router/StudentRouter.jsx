@@ -6,6 +6,8 @@ import StudentsHome from '../pages/StudentsHome'
 import StudentsForgotPassword from '../components/students/StudentsForgotPassword'
 import StudentNewPassword from '../components/students/StudentNewPassword'
 import { StudentContext, StudentsContextProvider } from '../context/StudentsContext'
+import StudentProfile from '../components/students/StudentProfile'
+import StudentShowProfile from '../components/students/StudentShowProfile'
 
 function StudentRouter() {
   const [authorized, setAuthorized] = useState(false)
@@ -34,6 +36,12 @@ function StudentRouter() {
         }
         <Route path='/forgotpassword' element={<StudentsForgotPassword />}></Route>
         <Route path='/newpassword' element={<StudentNewPassword/>}></Route>
+        {
+          authorized ? (<Route path='/addprofile' element={<StudentProfile/>}></Route>) : (<Route path='/login' element={<StudentsLogin />}></Route>)
+        }
+        {
+          authorized ? (<Route path='/showprofile' element={<StudentShowProfile/>}></Route>) : (<Route path='/login' element={<StudentsLogin />}></Route>)
+        }
       </Routes>
     </>
     </StudentsContextProvider>
