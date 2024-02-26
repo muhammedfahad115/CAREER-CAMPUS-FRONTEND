@@ -29,7 +29,7 @@ function InstitutionsProfile() {
             email
         }
         try {
-            const response = await axiosInstance.post('/students/addprofile', formData)
+            const response = await axiosInstance.post('/institutions/addprofile', formData)
             // Add your logic for form submission here
             console.log('Form Submitted:', formData);
             if (response.data.message) {
