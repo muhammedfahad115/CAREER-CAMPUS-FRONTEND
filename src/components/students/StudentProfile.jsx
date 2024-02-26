@@ -19,17 +19,31 @@ function StudentProfile() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         // Access individual state variables for form data
-        const formData = {
-            firstName,
-            lastName,
-            dob,
-            gender,
-            description,
-            contactNumber,
-            email
-        }
+        const formData = new FormData();
+        formData.append('firstName',firstName);
+        formData.append('lastName',lastName);
+        formData.append('dob',dob);
+        formData.append('gender',gender);
+        formData.append('description',description);
+        formData.append('contactNumber',contactNumber);
+        formData.append('email',email);
+        formData.append('image',image);
+        // const formData = {
+        //     firstName,
+        //     lastName,
+        //     dob,
+        //     gender,
+        //     description,
+        //     contactNumber,
+        //     email
+        // }
         try {
-            const response = await axiosInstance.post('/students/addprofile', formData)
+            const response = await axiosInstance.post('/students/addprofile', formData,{
+            withCredentials: true,
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+            })
             // Add your logic for form submission here
             console.log('Form Submitted:', formData);
             if (response.data.message) {
