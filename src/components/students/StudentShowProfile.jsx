@@ -67,8 +67,10 @@ function StudentShowProfile() {
   return (
     <>
       <div className='flex justify-center bg-cover bg-no-repeat items-center h-screen' style={{ backgroundImage: `url(${img})` }}>
-        <div className=' bg-white  bg-opacity-40 w-[800px] rounded-xl  justify-evenly h-[500px] backdrop-blur-lg '>
-          <h2 className=" flex justify-center mt-4 text-3xl font-extrabold text-yellow-500 mb-4">Student Profile</h2>
+        <div className=' bg-white  bg-opacity-40 w-[800px] rounded-xl  justify-evenly h-[600px] backdrop-blur-lg '>
+          <div className=" flex justify-center mt-4 text-3xl font-extrabold text-yellow-500 mb-4">
+          <div><img className=' w-[150px] h-[150px] rounded-full ' src="https://careercampus.s3.ap-south-1.amazonaws.com/image-1709007782083.jpeg" /></div>
+          </div>
           <div className='flex justify-evenly'>
             <div className='bg-white flex justify-center p-2 w-[320px] rounded-2xl h-[380px]'>
               <div className=' flex flex-col  gap-y-16 justify-center'>
@@ -110,6 +112,7 @@ function StudentShowProfile() {
             </span>
           </button></div>
         </div>
+      
       </div>
     </>
   );
