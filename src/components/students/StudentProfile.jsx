@@ -28,15 +28,6 @@ function StudentProfile() {
         formData.append('contactNumber',contactNumber);
         formData.append('email',email);
         formData.append('image',image);
-        // const formData = {
-        //     firstName,
-        //     lastName,
-        //     dob,
-        //     gender,
-        //     description,
-        //     contactNumber,
-        //     email
-        // }
         try {
             const response = await axiosInstance.post('/students/addprofile', formData,{
             withCredentials: true,

@@ -1,18 +1,15 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import img1 from '../../assets/searchiconj.png'
 import { Link } from 'react-router-dom'
 import _, { includes } from 'lodash'
 import InstitutionsSearch from './InstitutionsSearch'
+import axiosInstance from '../../api/axios'
 function InstitutionsHeader({getShowStudents}) {
     const [typedInput, setTypedInput] = useState('')
     const [showSearch, setShowSearch] = useState(false);
-    
-    const debounceInputChange = _.debounce((e)=>{
-        setTypedInput(e.target.value);
-    },1000)
-    const filteredData =  getShowStudents.filter((student)=>{
-        return typedInput && student && student.firstName && student.firstName.toLowerCase(includes(typedInput))
-    })
+    const searchFilter =()=>{
+        
+    }
     const searchBar = () =>{
         setShowSearch(true);
     } 
@@ -31,7 +28,7 @@ function InstitutionsHeader({getShowStudents}) {
                 </div>
                 <div className='flex items-center'>
                     <div className='relative   sm:flex'>
-                        <input type="text" onChange={debounceInputChange} className='rounded-2xl w-80 h-10 pl-10 text-yellow-500 placeholder:text-center' placeholder='Search Students' onClick={searchBar} onBlur={clearSearch} />
+                        <input type="text"  className='rounded-2xl w-80 h-10 pl-10 text-yellow-500 placeholder:text-center' placeholder='Search Students' onClick={searchBar} onBlur={clearSearch} />
                             
                         <img className='absolute left-2 top-2 w-6 cursor-pointer' src={img1} alt="Search Icon" />
                     </div>

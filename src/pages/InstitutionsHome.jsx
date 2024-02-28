@@ -6,21 +6,21 @@ import InstitutionsSearch from '../components/institutions/InstitutionsSearch'
 // import ShowWelcome from '../components/ShowWelcome'
 
 function InstitutionsHome() {
-  const [getShowStudents, setGetShowStudents] = useState([])
-  useEffect(() => {
-      const showStudents = async () => {
-          const response = await axiosInstance.get('/institutions/getshowstudents',{
-              withCredentials: true,
-          })
-          setGetShowStudents(response.data.getStudents)
-      }
-      showStudents()
-  }, [])
-  console.log(getShowStudents)
+  // const [getShowStudents, setGetShowStudents] = useState([])
+  // useEffect(() => {
+  //     const showStudents = async () => {
+  //         const response = await axiosInstance.get('/institutions/getshowstudents',{
+  //             withCredentials: true,
+  //         })
+  //         setGetShowStudents(response.data.getStudents)
+  //     }
+  //     showStudents()
+  // }, [])
+  // console.log(getShowStudents)
   return (
     <>
-    <InstitutionsHeader getShowStudents={getShowStudents}/>
-    <InstitutionsShowStudents getShowStudents={getShowStudents}/>
+    <InstitutionsHeader />
+    <InstitutionsShowStudents />
     {/* <ShowWelcome/> */}
     </>
   )
