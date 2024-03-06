@@ -6,9 +6,10 @@ import { Provider } from 'react-redux'
 import studentStore from './redux/studentsredux/studentsstore.js'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
-  <React.StrictMode>
-    <Provider store={studentStore}>
+  <Provider store={studentStore}>
     <App />
     </Provider>
-  </React.StrictMode>,
 )
+
+  //     <React.StrictMode>
+  // </React.StrictMode>,

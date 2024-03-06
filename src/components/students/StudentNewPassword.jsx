@@ -8,7 +8,7 @@ function StudentNewPassword() {
     const [error, setError] = useState('')
     const {verifyPhoneNumber} = useContext(StudentContext)
     console.log(verifyPhoneNumber)
-    
+      
     
     function regexValidation(newpassword){
         const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;

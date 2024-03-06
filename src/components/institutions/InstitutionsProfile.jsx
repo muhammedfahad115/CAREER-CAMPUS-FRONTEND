@@ -6,7 +6,7 @@ function InstitutionsProfile() {
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [dob, setDob] = useState('');
-    const [gender, setGender] = useState('');
+    const [institution, setinstitution] = useState('');
     const [description, setDescription] = useState('');
     const [contactNumber, setContactNumber] = useState('');
     const [email, setEmail] = useState('')
@@ -19,17 +19,22 @@ function InstitutionsProfile() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         // Access individual state variables for form data
-        const formData = {
-            firstName,
-            lastName,
-            dob,
-            gender,
-            description,
-            contactNumber,
-            email
-        }
+        const formData = new FormData();
+        formData.append('firstName',firstName);
+        formData.append('lastName',lastName);
+        formData.append('dob',dob);
+        formData.append('institution',institution);
+        formData.append('description',description);
+        formData.append('contactNumber',contactNumber);
+        formData.append('email',email);
+        formData.append('image',image);
         try {
-            const response = await axiosInstance.post('/institutions/addprofile', formData)
+            const response = await axiosInstance.post('/institutions/addprofile', formData,{
+            withCredentials: true,
+            headers: {
+                'Content-Type': 'multipart/form-data'
+            }
+            })
             // Add your logic for form submission here
             console.log('Form Submitted:', formData);
             if (response.data.message) {
@@ -108,7 +113,7 @@ function InstitutionsProfile() {
                                 {/* Date of Birth */}
                                 <div className="mb-4">
                                     <label className="block text-black text-sm font-bold mb-2" htmlFor="dob">
-                                        Date of Birth
+                                        Started Date
                                     </label>
                                     <input
                                         className="w-full px-3 py-2 border-2 border-gray-300 rounded-md focus:outline-none focus:border-black"
@@ -123,24 +128,24 @@ function InstitutionsProfile() {
 
                             {/* Second Div */}
                             <div className="md:w-1/2">
-                                {/* Gender */}
+                                {/* institution */}
                                 <div className="mb-4">
-                                    <label className="block text-black text-sm font-bold mb-2" htmlFor="gender">
-                                        Gender
+                                    <label className="block text-black text-sm font-bold mb-2" htmlFor="institution">
+                                        Institution
                                     </label>
                                     <select
                                         className="w-full px-3 py-2 border-2 border-gray-300 rounded-md focus:outline-none focus:border-black"
-                                        id="gender"
-                                        value={gender}
-                                        onChange={(e) => setGender(e.target.value)}
+                                        id="institution"
+                                        value={institution}
+                                        onChange={(e) => setinstitution(e.target.value)}
                                         required
                                     >
                                         <option value="" disabled hidden>
-                                            Select Gender
+                                            Select institution
                                         </option>
-                                        <option value="male">Male</option>
-                                        <option value="female">Female</option>
-                                        <option value="other">Other</option>
+                                        <option value="Private">Private</option>
+                                        <option value="Government">Government</option>
+                                        <option value="Management">Management</option>
                                     </select>
                                 </div>
 

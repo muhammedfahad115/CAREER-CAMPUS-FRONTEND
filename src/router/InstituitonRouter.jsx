@@ -4,6 +4,7 @@ import InstitutionsLogin from '../components/institutions/InstitutionsLogin'
 import InstitutionsSignup from '../components/institutions/InstitutionsSignup'
 import InstitutionsHome from '../pages/InstitutionsHome'
 import InstitutionsProfile from '../components/institutions/InstitutionsProfile'
+import InstitutionsMessage from '../components/institutions/InstitutionsMessage'
 
 function InstituitonRouter() {
   return (
@@ -13,6 +14,7 @@ function InstituitonRouter() {
         <Route path='/signup' element={<InstitutionsSignup/>}></Route>
         <Route path='/home' element={<InstitutionsHome/>}></Route>
         <Route path='/addprofile' element={<InstitutionsProfile/>}></Route>
+        <Route path='/message' element={<InstitutionsMessage/>}></Route>
     </Routes>
     </>
   )

@@ -20,7 +20,7 @@ function StudentHeader() {
                 <div className='flex flex-wrap gap-5 mt-4 md:mt-0 md:ml-4 sm:flex justify-center cursor-pointer'>
                     <div><button onClick={home} className='hover:text-yellow-500'>HOME</button></div>
                     <div><Link to={'/students/addprofile'}><button className='hover:text-yellow-500'> Add Profile</button></Link></div>
-                    <div><button className='hover:text-yellow-500'>Messages</button></div>
+                    <div><Link to={'/students/message'}><button className='hover:text-yellow-500'>Messages</button></Link></div>
                     <div><Link to={'/students/showprofile'}><button className='hover:text-yellow-500'>Your Profile</button></Link></div>
                 </div>
             </div>

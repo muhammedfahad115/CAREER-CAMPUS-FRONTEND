@@ -8,6 +8,7 @@ import StudentNewPassword from '../components/students/StudentNewPassword'
 import { StudentContext, StudentsContextProvider } from '../context/StudentsContext'
 import StudentProfile from '../components/students/StudentProfile'
 import StudentShowProfile from '../components/students/StudentShowProfile'
+import StudentMessage from '../components/students/StudentMessage'
 
 function StudentRouter() {
   const [authorized, setAuthorized] = useState(false)
@@ -42,6 +43,7 @@ function StudentRouter() {
         {
           authorized ? (<Route path='/showprofile' element={<StudentShowProfile/>}></Route>) : (<Route path='/login' element={<StudentsLogin />}></Route>)
         }
+        <Route path='/message' element={<StudentMessage/>}></Route>
       </Routes>
     </>
     </StudentsContextProvider>

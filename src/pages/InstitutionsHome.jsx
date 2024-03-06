@@ -6,6 +6,7 @@ import InstitutionsSearch from '../components/institutions/InstitutionsSearch'
 // import ShowWelcome from '../components/ShowWelcome'
 
 function InstitutionsHome() {
+  
   // const [getShowStudents, setGetShowStudents] = useState([])
   // useEffect(() => {
   //     const showStudents = async () => {
