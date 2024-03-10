@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import axiosInstance from '../../api/axios';
 import io from 'socket.io-client';
 import send from '../../assets/sendbutton.png'
+import axios from 'axios';
 
 
 
@@ -16,22 +17,38 @@ function InstitutionsMessage() {
     const [showBox, setShowBox] = useState(false)
     const token = localStorage.getItem('jwtToken')
     useEffect(() => {
+
         const fetchStudent = async () => {
             const response = await axiosInstance.get('/institutions/getStudentMessage');
             setStudentMessage(response.data.findStudent);
         }
         fetchStudent()
         const socketInstance = io('http://localhost:3000', { transports: ['websocket'] });
+
+        const getMessageInstitutions = async () => {
+            // const getMessageOfInstitutions = await axiosInstance.get('/institutions/getinstitutionsmessage');
+            // if (getMessageOfInstitutions.data.addedMessage > 0)
+            //     setAddedMessage(getMessageOfInstitutions.data.findAddedMessage.addedMessage);
+        }
+        getMessageInstitutions()
+
         socketInstance.on('connect', (message) => {
             setSocket(socketInstance);
             console.log("institutionsocketid", socketInstance.id)
         })
         socketInstance.emit('addUser', { token });
-        return ()=>{
-                socketInstance.emit('disconnectManually', {reason: 'component unmounted '} ,{token})
-                socketInstance.disconnect()
+        return () => {
+            if (socketInstance) {
+                socketInstance.disconnect();
+                if (addedMessage.length > 0) {
+                    const saveMessage = async () => {
+                        const response = await axiosInstance.post('/institutions/postmessage', { addedMessage })
+                    }
+                    saveMessage();
+                }
             }
-        
+        }
+
     }, [])
 
     const showMessageBox = async (email) => {
@@ -51,7 +68,7 @@ function InstitutionsMessage() {
     useEffect(() => {
         messageContainerRef.current.scrollTop = messageContainerRef.current.scrollHeight;
         console.log(addedMessage)
-    }, [addedMessage])
+    }, [addedMessage]);
 
     const sendMessage = (e) => {
         e.preventDefault()
@@ -104,15 +121,15 @@ function InstitutionsMessage() {
                         ))}
                     </div>
                     <div ref={messageContainerRef} className="w-full px-5 flex flex-col justify-between p-2 h-[450px]  overflow-y-auto ">
-                    {addedMessage.length > 0 && (
+                        {addedMessage.length > 0 && (
                             <div>
                                 <ul>
                                     {addedMessage.map((previousMessage, index) => (
-                                        <div  key={index}>
+                                        <div key={index}>
                                             {previousMessage.email ? (
                                                 <div className='flex justify-start'><p className=' w-[50%] text-white p-2 rounded-br-xl rounded-bl-xl mb-4  bg-green-400 rounded-tr-xl'>{previousMessage.message}</p></div>
-                                            ):(
-                                                <div className='flex justify-end'><p  className=' w-[50%] text-white p-2 rounded-tl-xl rounded-bl-xl mb-4 bg-blue-400 rounded-tr-xl'>{previousMessage}</p></div>
+                                            ) : (
+                                                <div className='flex justify-end'><p className=' w-[50%] text-white p-2 rounded-tl-xl rounded-bl-xl mb-4 bg-blue-400 rounded-tr-xl'>{previousMessage}</p></div>
                                             )}
                                         </div>
                                     ))}

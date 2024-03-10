@@ -3,6 +3,7 @@ import InstitutionsHeader from '../components/institutions/InstitutionsHeader'
 import InstitutionsShowStudents from '../components/institutions/InstitutionsShowStudents'
 import axiosInstance from '../api/axios'
 import InstitutionsSearch from '../components/institutions/InstitutionsSearch'
+import InstitutionsAdvertisment from '../components/institutions/InstitutionsAdvertisment'
 // import ShowWelcome from '../components/ShowWelcome'
 
 function InstitutionsHome() {
@@ -22,6 +23,7 @@ function InstitutionsHome() {
     <>
     <InstitutionsHeader />
     <InstitutionsShowStudents />
+    <InstitutionsAdvertisment/>
     {/* <ShowWelcome/> */}
     </>
   )

@@ -33,7 +33,7 @@ function InstitutionsShowStudents({ getShowStudents }) {
     return (
         <>
             <div className=' flex justify-center   h-screen items-center  sm:gap-y-5 flex-col' >
-                <div className=' flex justify-center mt-[120%] sm:mt-0 bg-none sm:bg-none rounded-md flex-wrap w-1/2 p-4 gap-x-10  gap-y-5 sm:gap-y-0 sm:fixed'>
+                <div className=' flex justify-center -z-40 mt-[120%] sm:mt-0 bg-none sm:bg-none rounded-md flex-wrap w-1/2 p-4 gap-x-10  gap-y-5 sm:gap-y-0 sm:fixed'>
                     <div className=' flex justify-center items-end'>{currentPage > 1 && <button onClick={previousButton} className=' flex  justify-center font-bold items-center w-28 h-5'><img className='w-[30%] mr-1' src={prev} />Previous</button>}</div>
                     {/* <br /> */}
                     {showStudents.map((student, index) => (

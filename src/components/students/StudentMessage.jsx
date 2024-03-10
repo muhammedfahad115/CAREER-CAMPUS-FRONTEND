@@ -25,16 +25,26 @@ function StudentMessage() {
         fetchStudent()
         const socketInstance = io('http://localhost:3000', { transports: ['websocket'] });
 
+        const getMessageStudents = async () => {
+            const getMesssageOfStudents = await axiosInstance.get('/students/getmessagestudents')
+            if (getMesssageOfStudents.data.addedMessage) {
+                setAddedMessage(getMesssageOfStudents.data.findAddedMessage.addedMessage);
+
+            }
+        }
+        getMessageStudents()
+
         socketInstance.on('connect', (message) => {
             // console.log(message);
             setSocket(socketInstance);
-            console.log("studentSocketID",socketInstance.id)
+            console.log("studentSocketID", socketInstance.id)
 
         })
         socketInstance.emit('addUser', { token });
-        return ()=>{
-            socketInstance.emit('disconnectManually', {reason: 'component unmounted '} , {token})
-            socketInstance.disconnect()
+        return () => {
+            if (socketInstance) {
+                socketInstance.disconnect();
+            }
         }
     }, [])
 
@@ -42,12 +52,9 @@ function StudentMessage() {
     useEffect(() => {
         if (socket !== null) {
             socket.on('messagefromtheserver', (message) => {
-                // getShowInstitutionsMessage((msg) => [...msg, message]);
-                setAddedMessage((msg) => [...msg,message])
-                console.log(addedMessage);
+                setAddedMessage((msg) => [...msg, message])
                 // console.log(addedMessage);
-                console.log(message);
-                // console.log(message.email);
+                // console.log(message);
             });
         }
     }, [socket]);
@@ -68,6 +75,13 @@ function StudentMessage() {
     useEffect(() => {
         messageContainerRef.current.scrollTop = messageContainerRef.current.scrollHeight;
         console.log(addedMessage)
+        if (addedMessage.length > 0) {
+            const saveMessage = async () => {
+                const response = await axiosInstance.post('/students/postmessage', { addedMessage })
+                console.log(response.data.addedMessage)
+            }
+            saveMessage()
+        }
     }, [addedMessage])
 
     const sendMessage = (e) => {
@@ -115,12 +129,12 @@ function StudentMessage() {
                         {addedMessage.length > 0 && (
                             <div>
                                 <ul>
-                                {addedMessage.map((previousMessage, index) => (
-                                        <div  key={index}>
+                                    {addedMessage.map((previousMessage, index) => (
+                                        <div key={index}>
                                             {previousMessage.email ? (
                                                 <div className='flex justify-start'><p className=' w-[50%] text-white p-2 rounded-br-xl rounded-bl-xl mb-4  bg-green-400 rounded-tr-xl'>{previousMessage.message}</p></div>
-                                            ):(
-                                                <div className='flex justify-end'><p  className=' w-[50%] text-white p-2 rounded-tl-xl rounded-bl-xl mb-4 bg-blue-400 rounded-tr-xl'>{previousMessage}</p></div>
+                                            ) : (
+                                                <div className='flex justify-end'><p className=' w-[50%] text-white p-2 rounded-tl-xl rounded-bl-xl mb-4 bg-blue-400 rounded-tr-xl'>{previousMessage}</p></div>
                                             )}
                                         </div>
                                     ))}
