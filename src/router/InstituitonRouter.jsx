@@ -6,6 +6,7 @@ import InstitutionsHome from '../pages/InstitutionsHome'
 import InstitutionsProfile from '../components/institutions/InstitutionsProfile'
 import InstitutionsMessage from '../components/institutions/InstitutionsMessage'
 import InstitutionsAdvertisment from '../components/institutions/InstitutionsAdvertisment'
+import InstitutionsAdsPayment from '../components/institutions/InstitutionsAdsPayment'
 
 function InstituitonRouter() {
   return (
@@ -16,7 +17,6 @@ function InstituitonRouter() {
         <Route path='/home' element={<InstitutionsHome/>}></Route>
         <Route path='/addprofile' element={<InstitutionsProfile/>}></Route>
         <Route path='/message' element={<InstitutionsMessage/>}></Route>
-        <Route path='/ads' element={<InstitutionsAdvertisment/>}></Route>
     </Routes>
     </>
   )
