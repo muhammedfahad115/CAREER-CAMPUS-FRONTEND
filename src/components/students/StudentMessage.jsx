@@ -16,25 +16,19 @@ function StudentMessage() {
     const [showInstitutionsMessage, getShowInstitutionsMessage] = useState([])
     const [showBox, setShowBox] = useState(false)
     const token = localStorage.getItem('jwtToken');
+    const [recieverEmail, setRecieverEmail] = useState('')
 
     useEffect(() => {
         const fetchStudent = async () => {
             const response = await axiosInstance.get('/students/getinstitutions');
             setStudentMessage(response.data.findInstitutions);
+            setRecieverEmail(response.data.recieverEmail);
+            
         }
         fetchStudent()
         const socketInstance = io('http://localhost:3000', { transports: ['websocket'] });
 
-        const getMessageStudents = async () => {
-            const getMesssageOfStudents = await axiosInstance.get('/students/getmessagestudents')
-            if (getMesssageOfStudents.data.addedMessage) {
-                setAddedMessage(getMesssageOfStudents.data.findAddedMessage.addedMessage);
-
-            }
-        }
-        getMessageStudents()
-
-        socketInstance.on('connect', (message) => {
+        socketInstance.on('connect', () => {
             // console.log(message);
             setSocket(socketInstance);
             console.log("studentSocketID", socketInstance.id)
@@ -53,6 +47,13 @@ function StudentMessage() {
         if (socket !== null) {
             socket.on('messagefromtheserver', (message) => {
                 setAddedMessage((msg) => [...msg, message])
+                const saveMessage = async () =>{
+                    const response = await axiosInstance.post('/students/postmessage',{message},{
+                        withCredentials: true,
+                    })
+                    console.log(message,'students message aaaaan');
+                }
+                saveMessage()
                 // console.log(addedMessage);
                 // console.log(message);
             });
@@ -60,7 +61,20 @@ function StudentMessage() {
     }, [socket]);
 
     const showMessageBox = async (email) => {
-        // const response = await axiosInstance.get(`institutions/getSavedMessage?student=${email}`);
+        const showMessage = await axiosInstance.get(`/students/getmessage?senderEmail=${email}`)
+        const message = showMessage.data.findMessage;
+        setAddedMessage((previousMessage) => [...previousMessage, {message}]);
+        const filteredMessage = addedMessage.filter((msg) => {
+            return msg.senderEmail == recieverEmail && msg.recieverEmail == institutionsEmail.email || msg.senderEmail == institutionsEmail.email && msg.recieverEmail == recieverEmail
+        })
+        setAddedMessage(filteredMessage);
+        if(message.length > 0){
+        message.forEach((item) =>{
+            setAddedMessage((previousMessage) => [...previousMessage, item.message])
+        })
+    }
+        // setAddedMessage((msg) => [...msg, message])
+        console.log(message);
     }
 
     function showChatBox(user) {
@@ -75,24 +89,26 @@ function StudentMessage() {
     useEffect(() => {
         messageContainerRef.current.scrollTop = messageContainerRef.current.scrollHeight;
         console.log(addedMessage)
-        if (addedMessage.length > 0) {
-            const saveMessage = async () => {
-                const response = await axiosInstance.post('/students/postmessage', { addedMessage })
-                console.log(response.data.addedMessage)
-            }
-            saveMessage()
-        }
     }, [addedMessage])
 
     const sendMessage = (e) => {
         e.preventDefault()
         if (message.trim('')) {
-            setAddedMessage((previousMessage) => [...previousMessage, message]);
+            const getSenderEmail  = 
+            setAddedMessage((previousMessage) => [...previousMessage, {message , senderEmail: recieverEmail, recieverEmail: institutionsEmail.email}]);
         }
         console.log(socket)
         setMessage('')
         socket.emit('messagefromtheclient', { message, institutionsEmail, socketId: socket.id });
+        const saveSentedMessage = async () =>{
+            const response = await axiosInstance.post('/students/postsentedmessage',{message, senderEmail: recieverEmail});
+            console.log(response.data.sendedMessage);
+        }
+        saveSentedMessage()
     }
+     
+
+
 
     return (
         <>
@@ -131,10 +147,10 @@ function StudentMessage() {
                                 <ul>
                                     {addedMessage.map((previousMessage, index) => (
                                         <div key={index}>
-                                            {previousMessage.email ? (
+                                            {previousMessage.senderEmail == institutionsEmail.email ? (
                                                 <div className='flex justify-start'><p className=' w-[50%] text-white p-2 rounded-br-xl rounded-bl-xl mb-4  bg-green-400 rounded-tr-xl'>{previousMessage.message}</p></div>
                                             ) : (
-                                                <div className='flex justify-end'><p className=' w-[50%] text-white p-2 rounded-tl-xl rounded-bl-xl mb-4 bg-blue-400 rounded-tr-xl'>{previousMessage}</p></div>
+                                                <div className='flex justify-end'><p className=' w-[50%] text-white p-2 rounded-tl-xl rounded-bl-xl mb-4 bg-blue-400 rounded-tr-xl'>{previousMessage.message}</p></div>
                                             )}
                                         </div>
                                     ))}

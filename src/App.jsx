@@ -1,15 +1,11 @@
-import { useState } from 'react'
 import './App.css'
-import Header from './components/Header'
 import Landingpage from './pages/Landingpage'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 import StudentRouter from './router/StudentRouter'
-import LandingRouter from './router/LandingRouter'
 import InstituitonRouter from './router/InstituitonRouter'
 import EmployeesRouter from './router/EmployeesRouter'
 import CompaniesRouter from './router/CompaniesRouter'
-import StudentsSignup from './components/students/StudentsSignup'
-
+import PageNotFound from './components/PageNotFound'
 function App() {
 
   
@@ -21,7 +17,8 @@ function App() {
           <Route path='/students/*' element={<StudentRouter/>}></Route>
           <Route path='/institutions/*' element={<InstituitonRouter/>}></Route>
           <Route path='/employees/*' element={<EmployeesRouter/>}></Route>
-          <Route path='/*' element={<LandingRouter/>}></Route>
+          <Route path='/' element={<Landingpage/>}></Route>
+          <Route path='*' element={<PageNotFound/>}></Route>
         </Routes>
       </BrowserRouter>
     </>

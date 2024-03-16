@@ -7,32 +7,27 @@ import axios from 'axios';
 
 
 function InstitutionsMessage() {
+
     const [studentMessage, setStudentMessage] = useState([]);
     const [socket, setSocket] = useState(null);
     const [message, setMessage] = useState('');
     const [addedMessage, setAddedMessage] = useState([])
     const [institutionsEmail, setInstitutionsEmail] = useState('');
     const messageContainerRef = useRef();
-    const [messageFromStudent, setMessageFromStudent] = useState([])
     const [showBox, setShowBox] = useState(false)
+    const [recieverEmail, setRecieverEmail] = useState('');
     const token = localStorage.getItem('jwtToken')
-    useEffect(() => {
 
+    useEffect(() => {
         const fetchStudent = async () => {
             const response = await axiosInstance.get('/institutions/getStudentMessage');
             setStudentMessage(response.data.findStudent);
+            setRecieverEmail(response.data.recieverEmail);
         }
         fetchStudent()
         const socketInstance = io('http://localhost:3000', { transports: ['websocket'] });
 
-        const getMessageInstitutions = async () => {
-            // const getMessageOfInstitutions = await axiosInstance.get('/institutions/getinstitutionsmessage');
-            // if (getMessageOfInstitutions.data.addedMessage > 0)
-            //     setAddedMessage(getMessageOfInstitutions.data.findAddedMessage.addedMessage);
-        }
-        getMessageInstitutions()
-
-        socketInstance.on('connect', (message) => {
+        socketInstance.on('connect', () => {
             setSocket(socketInstance);
             console.log("institutionsocketid", socketInstance.id)
         })
@@ -40,48 +35,71 @@ function InstitutionsMessage() {
         return () => {
             if (socketInstance) {
                 socketInstance.disconnect();
-                if (addedMessage.length > 0) {
-                    const saveMessage = async () => {
-                        const response = await axiosInstance.post('/institutions/postmessage', { addedMessage })
-                    }
-                    saveMessage();
-                }
             }
         }
 
     }, [])
 
     const showMessageBox = async (email) => {
-        // console.log(email);
-        // const response = await axiosInstance.get(`institutions/getSavedMessage?student=${email}`);
+        console.log('showmessagebox', email);
+        const showMessage = await axiosInstance.get(`/institutions/getmessage?senderEmail=${email}`)
+        const message = showMessage.data.findMessage
+
+        // message.forEach((item) => {
+        setAddedMessage((previousMessage) => [...previousMessage, ...message]);
+        console.log(addedMessage);
+        // })
+        // const filteredMessage = addedMessage.filter((msg) => {
+        //     return msg.senderEmail == recieverEmail && msg.recieverEmail == institutionsEmail.email || msg.senderEmail == institutionsEmail.email && msg.recieverEmail == recieverEmail
+        // })
+        // console.log(addedMessage, " lodeetdg");
+        // setAddedMessage(filteredMessage)
+
+        // if(message.length > 0){
+        //     message.forEach((item) =>{
+        //         setAddedMessage((previousMessage) => [...previousMessage, item.message])
+        //     })
+        // }
+        // // setAddedMessage((msg) => [...msg, message ])
+        // console.log(message);
     }
 
     useEffect(() => {
         if (socket !== null) {
             socket.on('messagefromtheserver', (message) => {
                 setAddedMessage((msg) => [...msg, message]);
+                const saveMessage = async () => {
+                    const response = await axiosInstance.post('/institutions/postmessage', { message })
+                    console.log(message, 'insitutions message aaan');
+                }
+                saveMessage();
             });
         }
     }, [socket]);
 
 
     useEffect(() => {
+        console.log("----------------------", addedMessage)
         messageContainerRef.current.scrollTop = messageContainerRef.current.scrollHeight;
-        console.log(addedMessage)
     }, [addedMessage]);
 
     const sendMessage = (e) => {
         e.preventDefault()
         if (message.trim('')) {
-            setAddedMessage((previousMessage) => [...previousMessage, message]);
+            setAddedMessage((previousMessage) => [...previousMessage, { message, senderEmail: recieverEmail, recieverEmail: institutionsEmail.email }]);
+            console.log(institutionsEmail.email);
         }
         setMessage('');
         socket.emit('messagefromtheclient', { message, institutionsEmail, socketId: socket.id });
+        const saveSentedMessage = async () => {
+            const response = await axiosInstance.post('/institutions/postsentedmessage', { message, senderEmail: institutionsEmail.email })
+        }
+        saveSentedMessage()
     }
-
 
     function showChatBox(user) {
         return function () {
+
             showMessageBox(user.email);
             setInstitutionsEmail(user);
             setShowBox(true);
@@ -126,10 +144,10 @@ function InstitutionsMessage() {
                                 <ul>
                                     {addedMessage.map((previousMessage, index) => (
                                         <div key={index}>
-                                            {previousMessage.email ? (
+                                            {previousMessage.senderEmail == institutionsEmail.email ? (
                                                 <div className='flex justify-start'><p className=' w-[50%] text-white p-2 rounded-br-xl rounded-bl-xl mb-4  bg-green-400 rounded-tr-xl'>{previousMessage.message}</p></div>
                                             ) : (
-                                                <div className='flex justify-end'><p className=' w-[50%] text-white p-2 rounded-tl-xl rounded-bl-xl mb-4 bg-blue-400 rounded-tr-xl'>{previousMessage}</p></div>
+                                                <div className='flex justify-end'><p className=' w-[50%] text-white p-2 rounded-tl-xl rounded-bl-xl mb-4 bg-blue-400 rounded-tr-xl'>{previousMessage.message}</p></div>
                                             )}
                                         </div>
                                     ))}

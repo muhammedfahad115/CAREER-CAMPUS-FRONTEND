@@ -44,16 +44,16 @@ function InstitutionsAdsPayment() {
       };
     return (
         <>
-            <div className=" w-[314px] h-[496px]  bg-black border-2 border-[#000000] rounded-[30px] overflow-hidden shadow-lg">
+            <div className=" w-[414px] h-[496px]  bg-white border-2 border-[#000000] rounded-[30px] overflow-hidden shadow-lg">
                 {/* screen */}
-                <div className="bg-black w-full h-[812px]">
+                <div className="bg-white px-2 py-2 w-full h-[812px]">
                     <form className=' flex flex-col gap-y-4' onSubmit={handleSubmit} action="post">
-                        <div className=' w-full flex bg-yellow-500 justify-center p-2'><h1 className=' font-serif text-xl font-bold  text-black'>Advertisement</h1></div>
-                        <div className=' flex items-center  w-full h-[300px]  overflow-hidden bg-white-500 '  onClick={handleClick}>
-                        {image && <img src={URL.createObjectURL(image)}/>}
-                        <input type="file" onChange={handleChange} accept='image/*' ref={inputRef}  className='w-full h-fll object-cover rounded-2xl cursor-pointer' />
+                        <div className=' w-full flex rounded-tr-2xl rounded-tl-2xl bg-gray-400 justify-center p-2'><h1 className=' font-serif text-xl font-bold  text-black'>Advertisement</h1></div>
+                        <div className=' flex items-center  w-full h-[300px]  cursor-pointer overflow-hidden bg-white-500 '  onClick={handleClick}>
+                        {image ? (<img   src={URL.createObjectURL(image)}/>) : (<p className=' bg-red-500 w-full'> Click here Anywhere</p>)}
+                        <input type="file" onChange={handleChange} accept='image/*' ref={inputRef}  className='w-full h-fll object-cover  opacity-0  rounded-2xl cursor-pointer' />
                         </div>
-                        <div ><input placeholder='Enter your Insitution Name here...' className='border-[1px]  placeholder:text-center py-2 outline-none border-black rounded-2xl w-full ' type="text" onChange={(e)=>setInstitutions(e.target.value)} /></div>
+                        <div ><input placeholder='Enter your Insitution Name here...' className='border-[1px]  placeholder:text-center py-2 px-5 outline-none border-black rounded-2xl w-full ' type="text" onChange={(e)=>setInstitutions(e.target.value)} /></div>
                         <div><button className='py-2 outline-none  bg-yellow-500 border-none rounded-2xl w-full '>Submit</button></div>
                     </form>
                 </div>

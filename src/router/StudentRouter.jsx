@@ -1,14 +1,15 @@
-import React, { useContext, useEffect, useState } from 'react'
-import { Route, Routes, Navigate, useNavigate, useOutlet } from 'react-router-dom'
+import {  useEffect, useState } from 'react'
+import { Route, Routes} from 'react-router-dom'
 import StudentsSignup from '../components/students/StudentsSignup'
 import StudentsLogin from '../components/students/StudentsLogin'
 import StudentsHome from '../pages/StudentsHome'
 import StudentsForgotPassword from '../components/students/StudentsForgotPassword'
 import StudentNewPassword from '../components/students/StudentNewPassword'
-import { StudentContext, StudentsContextProvider } from '../context/StudentsContext'
+import {  StudentsContextProvider } from '../context/StudentsContext'
 import StudentProfile from '../components/students/StudentProfile'
 import StudentShowProfile from '../components/students/StudentShowProfile'
 import StudentMessage from '../components/students/StudentMessage'
+import PageNotFound from '../components/PageNotFound'
 
 function StudentRouter() {
   const [authorized, setAuthorized] = useState(false)
@@ -44,6 +45,7 @@ function StudentRouter() {
           authorized ? (<Route path='/showprofile' element={<StudentShowProfile/>}></Route>) : (<Route path='/login' element={<StudentsLogin />}></Route>)
         }
         <Route path='/message' element={<StudentMessage/>}></Route>
+        <Route path='*' element={<PageNotFound/>}></Route>
       </Routes>
     </>
     </StudentsContextProvider>
