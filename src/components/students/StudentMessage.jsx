@@ -1,9 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
+import  { useEffect, useRef, useState } from 'react';
 import axiosInstance from '../../api/axios';
 import io from 'socket.io-client';
 import send from '../../assets/sendbutton.png'
-import StudentsShowInstitutions from './StudentsShowInstitutions';
-
+import LoaderSpinner from '../LoadingSpinner';
 
 
 function StudentMessage() {
@@ -13,8 +12,8 @@ function StudentMessage() {
     const [addedMessage, setAddedMessage] = useState([])
     const [institutionsEmail, setInstitutionsEmail] = useState('');
     const messageContainerRef = useRef();
-    const [showInstitutionsMessage, getShowInstitutionsMessage] = useState([])
-    const [showBox, setShowBox] = useState(false)
+    const [showBox, setShowBox] = useState(false);
+    const [loading, setLoading] = useState(false);
     const token = localStorage.getItem('jwtToken');
     const [recieverEmail, setRecieverEmail] = useState('')
 
@@ -23,13 +22,12 @@ function StudentMessage() {
             const response = await axiosInstance.get('/students/getinstitutions');
             setStudentMessage(response.data.findInstitutions);
             setRecieverEmail(response.data.recieverEmail);
-            
+
         }
         fetchStudent()
         const socketInstance = io('http://localhost:3000', { transports: ['websocket'] });
 
         socketInstance.on('connect', () => {
-            // console.log(message);
             setSocket(socketInstance);
             console.log("studentSocketID", socketInstance.id)
 
@@ -47,34 +45,27 @@ function StudentMessage() {
         if (socket !== null) {
             socket.on('messagefromtheserver', (message) => {
                 setAddedMessage((msg) => [...msg, message])
-                const saveMessage = async () =>{
-                    const response = await axiosInstance.post('/students/postmessage',{message},{
+                const saveMessage = async () => {
+                    const response = await axiosInstance.post('/students/postmessage', { message }, {
                         withCredentials: true,
                     })
-                    console.log(message,'students message aaaaan');
                 }
                 saveMessage()
-                // console.log(addedMessage);
-                // console.log(message);
             });
         }
     }, [socket]);
 
     const showMessageBox = async (email) => {
-        const showMessage = await axiosInstance.get(`/students/getmessage?senderEmail=${email}`)
-        const message = showMessage.data.findMessage;
-        setAddedMessage((previousMessage) => [...previousMessage, {message}]);
-        const filteredMessage = addedMessage.filter((msg) => {
-            return msg.senderEmail == recieverEmail && msg.recieverEmail == institutionsEmail.email || msg.senderEmail == institutionsEmail.email && msg.recieverEmail == recieverEmail
-        })
-        setAddedMessage(filteredMessage);
-        if(message.length > 0){
-        message.forEach((item) =>{
-            setAddedMessage((previousMessage) => [...previousMessage, item.message])
-        })
-    }
-        // setAddedMessage((msg) => [...msg, message])
-        console.log(message);
+        setLoading(true)
+        const fetchPreviousMessage = async () =>{
+            const showMessage = await axiosInstance.get(`/students/getmessage?senderEmail=${email}`)
+            const message = showMessage.data.findMessage;
+            setAddedMessage(message);
+        }
+        setTimeout(() => {
+            fetchPreviousMessage();
+            setLoading(false)
+        }, 1000);
     }
 
     function showChatBox(user) {
@@ -88,25 +79,23 @@ function StudentMessage() {
 
     useEffect(() => {
         messageContainerRef.current.scrollTop = messageContainerRef.current.scrollHeight;
-        console.log(addedMessage)
     }, [addedMessage])
 
     const sendMessage = (e) => {
         e.preventDefault()
         if (message.trim('')) {
-            const getSenderEmail  = 
-            setAddedMessage((previousMessage) => [...previousMessage, {message , senderEmail: recieverEmail, recieverEmail: institutionsEmail.email}]);
+            const getSenderEmail =
+                setAddedMessage((previousMessage) => [...previousMessage, { message, senderEmail: institutionsEmail.email, recieverEmail: recieverEmail }]);
         }
         console.log(socket)
         setMessage('')
         socket.emit('messagefromtheclient', { message, institutionsEmail, socketId: socket.id });
-        const saveSentedMessage = async () =>{
-            const response = await axiosInstance.post('/students/postsentedmessage',{message, senderEmail: recieverEmail});
-            console.log(response.data.sendedMessage);
+        const saveSentedMessage = async () => {
+            const response = await axiosInstance.post('/students/postsentedmessage', { message, senderEmail: institutionsEmail.email });
         }
         saveSentedMessage()
     }
-     
+
 
 
 
@@ -141,17 +130,25 @@ function StudentMessage() {
                             </div>
                         ))}
                     </div>
-                    <div ref={messageContainerRef} className="w-full px-5 flex flex-col justify-between p-2 h-[450px]  overflow-y-auto ">
+                   {loading ? (<LoaderSpinner/>) : ( <div ref={messageContainerRef} className="w-full px-5 flex flex-col justify-between p-2 h-[450px]  overflow-y-auto ">
                         {addedMessage.length > 0 && (
                             <div>
                                 <ul>
                                     {addedMessage.map((previousMessage, index) => (
                                         <div key={index}>
-                                            {previousMessage.senderEmail == institutionsEmail.email ? (
-                                                <div className='flex justify-start'><p className=' w-[50%] text-white p-2 rounded-br-xl rounded-bl-xl mb-4  bg-green-400 rounded-tr-xl'>{previousMessage.message}</p></div>
-                                            ) : (
-                                                <div className='flex justify-end'><p className=' w-[50%] text-white p-2 rounded-tl-xl rounded-bl-xl mb-4 bg-blue-400 rounded-tr-xl'>{previousMessage.message}</p></div>
-                                            )}
+                                            {previousMessage.senderEmail === recieverEmail ? (
+                                                <div className='flex justify-start'>
+                                                    <p className='w-[50%] text-white p-2 rounded-br-xl rounded-bl-xl mb-4 bg-green-400 rounded-tr-xl'>
+                                                        {previousMessage.message}
+                                                    </p>
+                                                </div>
+                                            ) : previousMessage.senderEmail === institutionsEmail.email? (
+                                                <div className='flex justify-end'>
+                                                    <p className='w-[50%] text-white p-2 rounded-tl-xl rounded-bl-xl mb-4 bg-blue-400 rounded-tr-xl'>
+                                                        {previousMessage.message}
+                                                    </p>
+                                                </div>
+                                            ) : null}       
                                         </div>
                                     ))}
                                 </ul>
@@ -180,7 +177,7 @@ function StudentMessage() {
                                 </ul>
                             </div>
                         )}
-                    </div>
+                    </div>)}
                 </div>
             </div>
         </>

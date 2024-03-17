@@ -1,8 +1,8 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import axiosInstance from '../../api/axios';
 import io from 'socket.io-client';
 import send from '../../assets/sendbutton.png'
-import axios from 'axios';
+import LoaderSpinner from '../LoadingSpinner';
 
 
 
@@ -14,7 +14,8 @@ function InstitutionsMessage() {
     const [addedMessage, setAddedMessage] = useState([])
     const [institutionsEmail, setInstitutionsEmail] = useState('');
     const messageContainerRef = useRef();
-    const [showBox, setShowBox] = useState(false)
+    const [showBox, setShowBox] = useState(false);
+    const [loading, setLoading] = useState(false);
     const [recieverEmail, setRecieverEmail] = useState('');
     const token = localStorage.getItem('jwtToken')
 
@@ -41,27 +42,16 @@ function InstitutionsMessage() {
     }, [])
 
     const showMessageBox = async (email) => {
-        console.log('showmessagebox', email);
-        const showMessage = await axiosInstance.get(`/institutions/getmessage?senderEmail=${email}`)
-        const message = showMessage.data.findMessage
-
-        // message.forEach((item) => {
-        setAddedMessage((previousMessage) => [...previousMessage, ...message]);
-        console.log(addedMessage);
-        // })
-        // const filteredMessage = addedMessage.filter((msg) => {
-        //     return msg.senderEmail == recieverEmail && msg.recieverEmail == institutionsEmail.email || msg.senderEmail == institutionsEmail.email && msg.recieverEmail == recieverEmail
-        // })
-        // console.log(addedMessage, " lodeetdg");
-        // setAddedMessage(filteredMessage)
-
-        // if(message.length > 0){
-        //     message.forEach((item) =>{
-        //         setAddedMessage((previousMessage) => [...previousMessage, item.message])
-        //     })
-        // }
-        // // setAddedMessage((msg) => [...msg, message ])
-        // console.log(message);
+        setLoading(true);
+        const fetchPreviousMessage = async () =>{
+            const showMessage = await axiosInstance.get(`/institutions/getmessage?senderEmail=${email}`)
+            const message = showMessage.data.findMessage;
+            setAddedMessage(message);
+        }
+        setTimeout(() => {
+            fetchPreviousMessage();
+            setLoading(false);
+        }, 1000);
     }
 
     useEffect(() => {
@@ -79,15 +69,13 @@ function InstitutionsMessage() {
 
 
     useEffect(() => {
-        console.log("----------------------", addedMessage)
         messageContainerRef.current.scrollTop = messageContainerRef.current.scrollHeight;
     }, [addedMessage]);
 
     const sendMessage = (e) => {
         e.preventDefault()
         if (message.trim('')) {
-            setAddedMessage((previousMessage) => [...previousMessage, { message, senderEmail: recieverEmail, recieverEmail: institutionsEmail.email }]);
-            console.log(institutionsEmail.email);
+            setAddedMessage((previousMessage) => [...previousMessage, { message, senderEmail: institutionsEmail.email, recieverEmail: recieverEmail }]);
         }
         setMessage('');
         socket.emit('messagefromtheclient', { message, institutionsEmail, socketId: socket.id });
@@ -138,17 +126,25 @@ function InstitutionsMessage() {
                             </div>
                         ))}
                     </div>
-                    <div ref={messageContainerRef} className="w-full px-5 flex flex-col justify-between p-2 h-[450px]  overflow-y-auto ">
+                    {loading ? (<LoaderSpinner />) : (<div ref={messageContainerRef} className="w-full px-5 flex flex-col justify-between p-2 h-[450px]  overflow-y-auto ">
                         {addedMessage.length > 0 && (
                             <div>
                                 <ul>
                                     {addedMessage.map((previousMessage, index) => (
                                         <div key={index}>
-                                            {previousMessage.senderEmail == institutionsEmail.email ? (
-                                                <div className='flex justify-start'><p className=' w-[50%] text-white p-2 rounded-br-xl rounded-bl-xl mb-4  bg-green-400 rounded-tr-xl'>{previousMessage.message}</p></div>
-                                            ) : (
-                                                <div className='flex justify-end'><p className=' w-[50%] text-white p-2 rounded-tl-xl rounded-bl-xl mb-4 bg-blue-400 rounded-tr-xl'>{previousMessage.message}</p></div>
-                                            )}
+                                            {previousMessage.senderEmail === recieverEmail ? (
+                                                <div className='flex justify-start'>
+                                                    <p className='w-[50%] text-white p-2 rounded-br-xl rounded-bl-xl mb-4 bg-green-400 rounded-tr-xl'>
+                                                        {previousMessage.message}
+                                                    </p>
+                                                </div>
+                                            ) : previousMessage.senderEmail === institutionsEmail.email ? (
+                                                <div className='flex justify-end'>
+                                                    <p className='w-[50%] text-white p-2 rounded-tl-xl rounded-bl-xl mb-4 bg-blue-400 rounded-tr-xl'>
+                                                        {previousMessage.message}
+                                                    </p>
+                                                </div>
+                                            ) : null}
                                         </div>
                                     ))}
                                 </ul>
@@ -178,7 +174,7 @@ function InstitutionsMessage() {
                                 </ul>
                             </div>
                         )}
-                    </div>
+                    </div>)}
                 </div>
             </div>
         </>
