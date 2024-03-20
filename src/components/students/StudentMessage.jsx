@@ -61,11 +61,13 @@ function StudentMessage() {
             const showMessage = await axiosInstance.get(`/students/getmessage?senderEmail=${email}`)
             const message = showMessage.data.findMessage;
             setAddedMessage(message);
+            setLoading(false);
         }
-        setTimeout(() => {
-            fetchPreviousMessage();
-            setLoading(false)
-        }, 1000);
+        fetchPreviousMessage();
+        // setTimeout(() => {
+        //     fetchPreviousMessage();
+        //     setLoading(false)
+        // }, 1000);
     }
 
     function showChatBox(user) {
@@ -120,7 +122,7 @@ function StudentMessage() {
                             />
                         </div>
                         {studentMessage.map((user, index) => (
-                            <div key={index} onClick={showChatBox(user)} className="flex items-center border-2 rounded-xl  border-yellow-500 p-4 hover:bg-gray-100 cursor-pointer">
+                            <div key={index} onClick={showChatBox(user)} className="flex items-center border-2 rounded-xl mb-1  border-yellow-500 p-4 hover:bg-gray-100 cursor-pointer">
                                 <img
                                     src={user.image}
                                     className="object-cover h-8 w-8 rounded-full mr-2"
