@@ -14,7 +14,10 @@ function InstitutionsHeader() {
             const timeOutId = setTimeout(()=>{
                 perfomSearch()
             },delay)
-            return ()=> clearTimeout(timeOutId);
+            return ()=> {
+                clearTimeout(timeOutId);
+                home();
+            }
         }
     },[typedInput])
     const searchFilter =(e)=>{
@@ -46,7 +49,7 @@ function InstitutionsHeader() {
                 </div>
                 <div className='flex items-center'>
                     <div className='relative   sm:flex'>
-                        <input type="text"  onChange={(e)=>searchFilter(e.target.value)} className='rounded-2xl w-80 h-10 pl-10 text-yellow-500 placeholder:text-center' placeholder='Search Students' onClick={searchBar} onBlur={clearSearch} />
+                        <input type="text"  onChange={(e)=>searchFilter(e.target.value)} className='rounded-2xl w-80 h-10 pl-10 text-yellow-500  placeholder:text-center' placeholder='Search Students' onClick={searchBar} onBlur={clearSearch} />
                             
                         <img className='absolute left-2 top-2 w-6 cursor-pointer' src={img1} alt="Search Icon" />
                     </div>

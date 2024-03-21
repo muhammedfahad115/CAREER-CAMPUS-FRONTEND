@@ -65,8 +65,8 @@ function InstitutionsProfile() {
     return (
         <>
             <form onSubmit={handleSubmit} action="post">
-                <div className="h-screen flex justify-center items-center ">
-                    <div className="max-w-4xl w-full bg-yellow-500  p-6   rounded-md shadow-2xl">
+                <div className="sm:h-screen h-auto flex justify-center items-center ">
+                    <div className="max-w-4xl w-full bg-yellow-500 h-[100%] p-2   rounded-md shadow-2xl">
                         <div className=' flex justify-center text-3xl mb-3  font-bold'><h1>Profile</h1>
                         </div>
                         <div className=' flex  justify-center mb-10'>
@@ -77,7 +77,7 @@ function InstitutionsProfile() {
                         </div>
                         <div className="flex flex-col md:flex-row">
                             {/* First Div */}
-                            <div className="md:w-1/2 pr-4 mb-4 md:mb-0">
+                            <div className="md:w-1/2  pr-4 mb-4 md:mb-0">
                                 {/* First Name */}
                                 <div className="mb-4">
                                     <label className="block text-black text-sm font-bold mb-2" htmlFor="firstName">
