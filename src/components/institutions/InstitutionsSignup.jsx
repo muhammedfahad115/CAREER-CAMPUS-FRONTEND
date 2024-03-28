@@ -2,7 +2,7 @@ import React from 'react'
 import Institutionssignupbackground from '../../assets/institutionssignup.jpg'
 import { useState } from 'react'
 import axios from 'axios'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import 'animate.css'
 function InstitutionsSignup() {
   const [firstName, setFirstName] = useState('')
@@ -11,6 +11,7 @@ function InstitutionsSignup() {
   const [password, setPassword] = useState('')
   const [reenterpassword, setReenterPassword] = useState('')
   const [error, setError] = useState('')
+  const navigate = useNavigate();
 
   const backendUrl = 'http://localhost:5000/institutions/signup'
 
@@ -42,6 +43,7 @@ function InstitutionsSignup() {
         })
         if(response.data.message){
           console.log(response.data.message)
+          navigate('/institutions/home')
         }
       }catch(error){
         if(error.response && error.response.data.error){
